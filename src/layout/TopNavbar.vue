@@ -13,11 +13,16 @@
       </div>
     </div>
 
-    <div
-      class="cursor-pointer hover:text-orange-400"
-      @click="!userInfo.userId ? router.push('/login') : logout()"
-    >
-      {{ !userInfo.userId ? "로그인" : "로그아웃" }}
+    <div class="flex gap-[10px]">
+      <div v-if="userInfo.userId">{{ userInfo.userId }} 님</div>
+
+      <div
+        class="cursor-pointer hover:text-orange-400"
+        @click="!userInfo.userId ? router.push('/login') : logout()"
+        :class="userInfo.userId ? 'text-[#d9d9d9]' : null"
+      >
+        {{ !userInfo.userId ? "로그인" : "로그아웃" }}
+      </div>
     </div>
   </div>
 </template>
@@ -38,26 +43,23 @@ const menuList = [
   { name: "Admin", path: "/admin" },
 ];
 
+// 새로고침 시 사용자의 정보 가져오기
+watchEffect(() => {
+  if (userInfo.token && !userInfo.userId) {
+    fetchUserInfo();
+  }
+});
+
 function logout() {
   console.log("로그아웃");
   userInfo.initInfo();
   router.push("/login");
 }
 
-function fetchUserInfo(value) {
+function fetchUserInfo() {
   console.log("사용자 정보 요청");
   api.get("/user/userInfo").then((res) => {
     userInfo.saveUserInfo(res.data?.results.user);
   });
 }
-
-watchEffect(() => {
-  console.log("Token:", userInfo.token);
-  console.log("UserId:", userInfo.userId);
-});
-watchEffect(() => {
-  if (userInfo.token && !userInfo.userId) {
-    fetchUserInfo(userInfo.token);
-  }
-});
 </script>

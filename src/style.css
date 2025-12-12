@@ -13,7 +13,7 @@ body {
 
 /* 스크롤바 전체 */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 0px;
 }
 
 /* 스크롤바 트랙 */

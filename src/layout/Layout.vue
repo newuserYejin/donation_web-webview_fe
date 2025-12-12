@@ -12,7 +12,9 @@
     <TopNavbar />
 
     <!-- 하위 컴포넌트가 출력될 공간 -->
-    <router-view class="flex-[4] overflow-y-auto overflow-x-hidden h-full" />
+    <router-view
+      class="flex-[4] overflow-y-auto overflow-x-hidden h-full p-3"
+    />
   </div>
 </template>
 
