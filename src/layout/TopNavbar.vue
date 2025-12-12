@@ -15,35 +15,49 @@
 
     <div
       class="cursor-pointer hover:text-orange-400"
-      @click="router.push('/login')"
+      @click="!userInfo.userId ? router.push('/login') : logout()"
     >
-      로그인
+      {{ !userInfo.userId ? "로그인" : "로그아웃" }}
     </div>
   </div>
 </template>
 
-<script lang="js">
-import { useRouter } from 'vue-router';
-import router from '../routes';
+<script setup>
+import { useRouter } from "vue-router";
+import { userInfoStore } from "../store/UserStore";
+import { watch, watchEffect } from "vue";
+import api from "../api/axios";
 
-export default {
-  name: "TopNavbar",
-  components: {},
-  setup() {
-    const menuList = [{name : "Home", path:"/"},
-                       {name : "List", path:"/list"},
-                       {name: "Community", path:"/community"}];
-    const router = useRouter()
+const router = useRouter();
+const userInfo = userInfoStore();
 
-    function clickMenu(value) {
-      console.log("clickMenu value : ", value);
-    }
+const menuList = [
+  { name: "Home", path: "/" },
+  { name: "List", path: "/list" },
+  { name: "Community", path: "/community" },
+  { name: "Admin", path: "/admin" },
+];
 
-    return {
-      menuList,
-      clickMenu,
-      router
-    };
-  },
-};
+function logout() {
+  console.log("로그아웃");
+  userInfo.initInfo();
+  router.push("/login");
+}
+
+function fetchUserInfo(value) {
+  console.log("사용자 정보 요청");
+  api.get("/user/userInfo").then((res) => {
+    userInfo.saveUserInfo(res.data?.results.user);
+  });
+}
+
+watchEffect(() => {
+  console.log("Token:", userInfo.token);
+  console.log("UserId:", userInfo.userId);
+});
+watchEffect(() => {
+  if (userInfo.token && !userInfo.userId) {
+    fetchUserInfo(userInfo.token);
+  }
+});
 </script>

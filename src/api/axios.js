@@ -1,4 +1,5 @@
 import axios from "axios";
+import { userInfoStore } from "../store/UserStore";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BACK_URL + "/api",
@@ -11,10 +12,15 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     // 예: Pinia에서 토큰 가져와서 헤더에 넣는 구조
-    // const token = useAuthStore().token;
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
+    const token = userInfoStore().token;
+
+    // 🔥 로그인 요청에는 토큰을 붙이면 안 됨
+    const isLoginRequest = config.url.includes("/user/login");
+
+    if (!isLoginRequest && token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
     return config;
   },
   (error) => {

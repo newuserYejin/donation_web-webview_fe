@@ -3,7 +3,9 @@
 <template>
   <div class="flex flex-col gap-y-2 justify-center items-center">
     <form
+      ref="loginForm"
       @submit.prevent="doLogin"
+      method="post"
       class="border rounded-2xl p-4 relative top-[-50px] w-xl h-[40%] max-h-[400px] flex flex-col items-center justify-center gap-4"
     >
       <div class="text-2xl">Logo</div>
@@ -46,9 +48,13 @@
 <script setup>
 import { ref } from "vue";
 import api from "../api/axios";
+import { userInfoStore } from "../store/UserStore";
+import { useRouter } from "vue-router";
 
 const userId = ref("");
 const userPwd = ref("");
+const userInfo = userInfoStore();
+const router = useRouter();
 
 function doLogin() {
   if (userId.value.trim() == "" || userPwd.value.trim() == "") {
@@ -57,11 +63,25 @@ function doLogin() {
   }
 
   console.log("로그인 시도:", userId.value, userPwd.value);
+
   const sendData = {
     userId: userId.value,
     userPwd: userPwd.value,
   };
 
-  //   api.post("/user/signup", sendData);
+  api
+    .post("/user/login", sendData)
+    .then((response) => {
+      const raw = response.headers["authorization"];
+      const token = raw?.replace("Bearer ", "");
+
+      console.log("token : ", token);
+
+      userInfo.saveToken(token);
+      userInfo.saveUserInfo(response.data.user);
+
+      router.push("/");
+    })
+    .catch((error) => console.log("에러 발생 : ", error));
 }
 </script>

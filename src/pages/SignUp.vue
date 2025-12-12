@@ -1,4 +1,9 @@
-<style scoped></style>
+<style scoped>
+.error {
+  border-color: red;
+  color: red;
+}
+</style>
 
 <template>
   <div class="flex flex-col gap-y-2 justify-center items-center">
@@ -15,6 +20,7 @@
           name="userId"
           class="border h-full flex-1 rounded-md px-1 max-w-[50%]"
           v-model="userId"
+          :class="{ error: errorItem.errorId === 'userId' }"
         />
         <button
           type="button"
@@ -31,6 +37,7 @@
           name="userPwd"
           class="border h-full flex-1 max-w-[70%] rounded-md px-1"
           v-model="userPwd"
+          :class="{ error: errorItem.errorId === 'userPwd' }"
         />
       </div>
       <div class="flex w-[70%] gap-3 justify-between h-10 items-center">
@@ -41,6 +48,7 @@
           name="userPwd"
           class="border h-full flex-1 max-w-[70%] rounded-md px-1"
           v-model="userPwdConfirm"
+          :class="{ error: errorItem.errorId === 'userPwdConfirm' }"
         />
       </div>
       <div class="w-[70%] flex flex-col gap-1">
@@ -65,6 +73,10 @@ import api from "../api/axios";
 const userId = ref("");
 const userPwd = ref("");
 const userPwdConfirm = ref("");
+let errorItem = ref({
+  errorId: "",
+  errorMsg: "",
+});
 
 function doSignUp() {
   if (
@@ -73,6 +85,25 @@ function doSignUp() {
     userPwdConfirm.value.trim == ""
   ) {
     console.log("입력확인");
+
+    errorItem.value.errorMsg = "데이터를 입력해주세요";
+
+    userId.value.trim() == ""
+      ? (errorItem.value.errorId = "userId")
+      : userPwd.value.trim() == ""
+      ? (errorItem.value.errorId = "userPwd")
+      : (errorItem.value.errorId = "userPwdConfirm");
+
+    return;
+  }
+
+  errorItem.value = {
+    errorId: "",
+    errorMsg: "",
+  };
+
+  if (userPwd.value.trim() != userPwdConfirm.value.trim()) {
+    console.log("확인 비밀번호 불일치");
     return;
   }
 
