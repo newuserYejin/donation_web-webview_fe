@@ -6,11 +6,15 @@
       ref="loginForm"
       @submit.prevent="doLogin"
       method="post"
-      class="border rounded-2xl p-4 relative top-[-50px] w-xl h-[40%] max-h-[400px] flex flex-col items-center justify-center gap-4"
+      class="border rounded-2xl p-2 relative top-[-50px] w-xs sm:w-xl h-[40%] max-h-[300px] sm:max-h-[400px] flex flex-col items-center justify-center gap-4"
     >
       <div class="text-2xl">Logo</div>
-      <div class="flex w-[70%] gap-3 justify-between h-10 items-center">
-        <label for="userId" class="text-[1.1rem]">아이디</label>
+      <div
+        class="flex w-[90%] sm:w-[70%] gap-3 justify-between h-10 items-center"
+      >
+        <label for="userId" class="text-[0.9rem] sm:text-[1.1rem]"
+          >아이디</label
+        >
         <input
           type="text"
           id="userId"
@@ -19,8 +23,12 @@
           v-model="userId"
         />
       </div>
-      <div class="flex w-[70%] gap-3 justify-between h-10 items-center">
-        <label for="userPwd" class="text-[1.1rem]">비밀번호</label>
+      <div
+        class="flex w-[90%] sm:w-[70%] gap-3 justify-between h-10 items-center"
+      >
+        <label for="userPwd" class="text-[0.9rem] sm:text-[1.1rem]"
+          >비밀번호</label
+        >
         <input
           type="password"
           id="userPwd"
@@ -29,7 +37,7 @@
           v-model="userPwd"
         />
       </div>
-      <div class="w-[70%] flex flex-col gap-1">
+      <div class="w-[90%] sm:w-[70%] flex flex-col gap-1">
         <button
           class="border w-full py-2 font-bold rounded-md hover:bg-black hover:text-white cursor-pointer"
           type="submit"
@@ -58,7 +66,6 @@ const router = useRouter();
 
 function doLogin() {
   if (userId.value.trim() == "" || userPwd.value.trim() == "") {
-    console.log("입력확인");
     return;
   }
 
